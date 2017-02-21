@@ -3,7 +3,7 @@ package memory;
 /**
  * Created by Krishna Chaitanya Kandula on 2/20/17.
  */
-public class MemoryImpl {
+public class MemoryController {
     public static void main(String... args){
         SystemMemory memory = new SystemMemory();
         memory.initialize();
