@@ -2,6 +2,7 @@ package cpu;
 
 import memory.MemoryCommands;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -14,7 +15,7 @@ public class CPUController {
     private static final String CLASS_PATH = "out/production/CPU-Memory-Simulator memory.MemoryController";
     private static int IR;
     private static int AC;
-
+    private static int PC = -1;
     public static void main (String... args){
         try {
             Runtime rt = Runtime.getRuntime();
@@ -29,18 +30,13 @@ public class CPUController {
 
             Scanner sc = new Scanner(is);
             String line;
-            while(sc.hasNext() && !(line = sc.nextLine()).isEmpty()) {
+            while(sc.hasNext() && !(line = sc.nextLine()).isEmpty()){
+                pw.printf(MemoryCommands.READ);
+                pw.flush();
                 IR = Integer.parseInt(line);
                 System.out.println("" + IR);
-                switch (IR){
-                    case 50:
-                        System.exit(0);
-                        break;
-                    default:
-                        System.out.println("hi");
-                        System.exit(0);
-                        break;
-                }
+                runInstruction(sc, pw);
+
             }
 
             proc.waitFor();
@@ -48,11 +44,37 @@ public class CPUController {
             int exitVal = proc.exitValue();
 
             System.out.println("Process exited: " + exitVal);
-
         }
-        catch (Throwable t) {
-            t.printStackTrace();
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    private static void runInstruction(Scanner scan, PrintWriter pw){
+        switch (IR){
+            case 1:
+                AC = getNextInstruction(scan, pw);
+                break;
+            case 50:
+                System.exit(0);
+                break;
+            default:
+                System.out.println("hi");
+//                System.exit(0);
+                break;
+        }
+    }
+
+    private static int getNextInstruction(Scanner scan, PrintWriter pw) {
+        pw.printf(MemoryCommands.READ + PC);
+        pw.flush();
+        String line;
+        int data = Integer.MIN_VALUE;
+        if (scan.hasNext()) {
+            line = scan.nextLine();
+            data = Integer.parseInt(line);
+        }
+        PC++;
+        return data;
+    }
 }

@@ -10,7 +10,7 @@ public class MemoryController {
     public static void main(String... args){
         //Initial commands
         initialize();
-        read(MemoryCommands.READ + "0");
+//        read(MemoryCommands.READ + "0");
         try {
             Scanner sc = new Scanner(System.in);
             String line;
@@ -44,7 +44,7 @@ public class MemoryController {
         if(memory == null)
             memory = new SystemMemory();
         memory.initialize();
-//        memory.printMemory();
+        System.out.println(0);
     }
 
     /**
