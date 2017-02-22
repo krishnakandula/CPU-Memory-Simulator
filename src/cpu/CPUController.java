@@ -1,5 +1,7 @@
 package cpu;
 
+import memory.MemoryCommands;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -10,10 +12,11 @@ import java.util.Scanner;
  */
 public class CPUController {
     private static final String CLASS_PATH = "out/production/CPU-Memory-Simulator memory.MemoryController";
+    private static int IR;
+    private static int AC;
+
     public static void main (String... args){
-        try
-        {
-            int x;
+        try {
             Runtime rt = Runtime.getRuntime();
 
             Process proc = rt.exec("java -classpath " + CLASS_PATH);
@@ -21,15 +24,23 @@ public class CPUController {
             InputStream is = proc.getInputStream();
             OutputStream os = proc.getOutputStream();
 
+            //Initialize memory
             PrintWriter pw = new PrintWriter(os);
-            pw.printf("Greg\n");
-            pw.flush();
 
             Scanner sc = new Scanner(is);
             String line;
-
             while(sc.hasNext() && !(line = sc.nextLine()).isEmpty()) {
-                System.out.println(line);
+                IR = Integer.parseInt(line);
+                System.out.println("" + IR);
+                switch (IR){
+                    case 50:
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("hi");
+                        System.exit(0);
+                        break;
+                }
             }
 
             proc.waitFor();
@@ -39,9 +50,9 @@ public class CPUController {
             System.out.println("Process exited: " + exitVal);
 
         }
-        catch (Throwable t)
-        {
+        catch (Throwable t) {
             t.printStackTrace();
         }
     }
+
 }

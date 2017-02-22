@@ -11,6 +11,7 @@ import java.util.Arrays;
  */
 class SystemMemory {
     private static int[] memory;
+    private static boolean MODE_FLAG = false;
     private static final int MEMORY_CAPACITY = 2000;
     private static String INPUT_FILE_PATH = new File("")
             .getAbsolutePath()
@@ -22,6 +23,14 @@ class SystemMemory {
 
     protected void printMemory(){
         System.out.println(Arrays.toString(memory));
+    }
+
+//    protected boolean writeToMemory(int address, int data){
+//
+//    }
+
+    protected int readFromMemory(int address){
+        return memory[address];
     }
 
     /**
@@ -37,7 +46,7 @@ class SystemMemory {
             String line;
             int lastAddedIndex = 0;
             while((line = reader.readLine()) != null)
-                lastAddedIndex = addToMemory(line, lastAddedIndex);
+                lastAddedIndex = initalizeMemoryIndex(line, lastAddedIndex);
 
         } catch (Exception e){
             System.out.println(e.getMessage());
@@ -60,7 +69,7 @@ class SystemMemory {
      * @param address the address in memory to add the instruction to.
      * @return the last index that an input was added to.
      */
-    private int addToMemory(String input, int address) {
+    private int initalizeMemoryIndex(String input, int address) {
         //Check if line is blank
         if (input.isEmpty())
             return address;
@@ -88,7 +97,7 @@ class SystemMemory {
      * @param start The starting index to extract the integer.
      * @return The numeric value of the String.
      */
-    private int getIntFromString(String input, int start) {
+    public static int getIntFromString(String input, int start) {
         //Loop through String and add each digit to the total
         int end = start;
         while (end < input.length() && Character.isDigit(input.charAt(end)))
