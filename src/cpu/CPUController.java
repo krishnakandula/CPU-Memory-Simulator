@@ -1,6 +1,7 @@
 package cpu;
 
 import memory.MemoryCommands;
+import memory.SystemMemory;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,7 +21,7 @@ public class CPUController {
     private static int Y = 0;
     private static PrintWriter writer;
     private static Scanner scan;
-
+    private static boolean kernelMode = false;    //False = user mode, True = kernel mode
     public static void main (String... args){
         try {
             Runtime rt = Runtime.getRuntime();
@@ -44,6 +45,7 @@ public class CPUController {
     }
 
     private static int readFromMemory(int address){
+        checkMode(address);
         String command = String.format("%s %d", MemoryCommands.READ, address);
         writer.println(command);
         writer.flush();
@@ -52,9 +54,15 @@ public class CPUController {
     }
 
     private static void writeToMemory(int address, int data){
+        checkMode(address);
         String command = String.format("%s %d %d", MemoryCommands.WRITE, address, data);
         writer.println(command);
         writer.flush();
+    }
+
+    private static void checkMode(int address){
+        if(address > SystemMemory.USER_MEMORY_BOUNDER && !kernelMode)
+            System.exit(1);
     }
 
     private static void runInstruction(){
@@ -73,7 +81,12 @@ public class CPUController {
                 AC = readFromMemory(AC);
                 break;
             case 4:
-
+                //LoadIdxX addr
+                fetchInstructionToIR();     //Contains address
+                AC = readFromMemory(IR + X);
+                break;
+            case 5:
+                //LoadIdxY addr
                 break;
             case 7:
                 fetchInstructionToIR();     //Contains the address

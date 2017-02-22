@@ -9,10 +9,10 @@ import java.util.Arrays;
 /**
  * Created by Krishna Chaitanya Kandula on 2/20/17.
  */
-class SystemMemory {
+public class SystemMemory {
     private static int[] memory;
-    private static boolean MODE_FLAG = false;
-    private static final int MEMORY_CAPACITY = 2000;
+    protected static final int MEMORY_CAPACITY = 2000;
+    public static final int USER_MEMORY_BOUNDER = 999;
     private static String INPUT_FILE_PATH = new File("")
             .getAbsolutePath()
             .concat("/input.txt");
