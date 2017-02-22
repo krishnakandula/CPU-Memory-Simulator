@@ -1,5 +1,6 @@
 package memory;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -9,14 +10,13 @@ public class MemoryController {
     private static SystemMemory memory;
     public static void main(String... args){
         //Initial commands
-//        read(MemoryCommands.READ + "0");
+        initialize();
         try {
-            initialize();
             Scanner sc = new Scanner(System.in);
             String line;
             while(sc.hasNextLine()) {
                 line = sc.nextLine();
-                doCommand(line);
+                getCommandFromInput(line);
             }
         }
         catch (Throwable t){
@@ -26,46 +26,54 @@ public class MemoryController {
 
     /**
      *
-     * @param input
+     * @param command
      */
-    private static void doCommand(String input){
-        String command = getCommandFromInput(input);
+    private static void doCommand(String command, int address, int data){
         switch (command){
             //Initialize SystemMemory
             case MemoryCommands.INIT:
                 initialize();
                 break;
             case MemoryCommands.READ:
-                read(input);
+                System.out.println(read(address));
                 break;
             default:
                 System.exit(0);
         }
     }
 
+    /**
+     *
+     */
     private static void initialize(){
         if(memory == null)
             memory = new SystemMemory();
         memory.initialize();
     }
 
-    private static String getCommandFromInput(String input){
-        int endIndex = 0;
-        while(endIndex < input.length() && Character.isAlphabetic(input.charAt(endIndex)))
-            endIndex++;
-
-        return input.substring(0, endIndex);
-    }
-
     /**
      *
      * @param input
      */
-    private static void read(String input){
-        String address = input.substring(MemoryCommands.READ.length());
-        int memoryAddress = SystemMemory.getIntFromString(address, 0);
-        int data = memory.readFromMemory(memoryAddress);
-        System.out.println("" + data);
+    private static void getCommandFromInput(String input){
+        //Default values for data and address
+        int data = 0;
+        int address = 0;
+        String[] parameters = input.split(" ");
+        if (parameters.length > 1)
+            address = Integer.parseInt(parameters[1]);
+        if(parameters.length > 2)
+            data = Integer.parseInt(parameters[2]);
+        doCommand(parameters[0], address, data);
+    }
+
+    /**
+     *
+     * @param address
+     */
+    private static int read(int address){
+        int data = memory.readFromMemory(address);
+        return data;
     }
 
     private static void write(String input){

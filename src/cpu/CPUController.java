@@ -41,14 +41,15 @@ public class CPUController {
     }
 
     private static int readFromMemory(int address){
-        writer.println(MemoryCommands.READ + address);
+        String command = String.format("%s %d", MemoryCommands.READ, address);
+        writer.println(command);
         writer.flush();
 
-        return Integer.parseInt(scan.nextLine());;
+        return Integer.parseInt(scan.nextLine());
     }
 
-    private static void writeToMemory(int data, int address){
-        String command = String.format("%s|%d|%d", MemoryCommands.WRITE, data, address);
+    private static void writeToMemory(int address, int data){
+        String command = String.format("%s %d %d", MemoryCommands.WRITE, address, data);
         writer.println(command);
         writer.flush();
     }
