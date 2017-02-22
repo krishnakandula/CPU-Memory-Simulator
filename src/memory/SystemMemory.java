@@ -25,9 +25,9 @@ class SystemMemory {
         System.out.println(Arrays.toString(memory));
     }
 
-//    protected boolean writeToMemory(int address, int data){
-//
-//    }
+    protected void writeToMemory(int address, int data){
+        memory[address] = data;
+    }
 
     protected int readFromMemory(int address){
         return memory[address];

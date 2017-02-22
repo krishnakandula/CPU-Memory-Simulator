@@ -16,6 +16,8 @@ public class CPUController {
     private static int IR;
     private static int AC;
     private static int PC = 0;
+    private static int X = 0;
+    private static int Y = 0;
     private static PrintWriter writer;
     private static Scanner scan;
 
@@ -32,6 +34,7 @@ public class CPUController {
             scan = new Scanner(is);
 
             while(true){
+//                System.out.println("PC = " + PC);
                 fetchInstructionToIR();
                 runInstruction();
             }
@@ -58,6 +61,28 @@ public class CPUController {
         switch (IR){
             case 1:
                 fetchInstructionToAC();
+                break;
+            case 2:
+                fetchInstructionToAC();
+                AC = readFromMemory(AC);
+                break;
+            case 3:
+                //LoadInd addr
+                fetchInstructionToAC();
+                AC = readFromMemory(AC);
+                AC = readFromMemory(AC);
+                break;
+            case 4:
+
+                break;
+            case 7:
+                fetchInstructionToIR();     //Contains the address
+                writeToMemory(IR, AC);
+                break;
+            case 9:
+                fetchInstructionToIR();
+                if(IR == 1)
+                    System.out.println("" + AC);
                 break;
             case 50:
                 System.exit(0);

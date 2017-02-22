@@ -1,10 +1,9 @@
 package memory;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 /**
- * Created by Krishna Chaitanya Kandula on 2/20/17.
+ * Created by Krishna Chaitanya Kandula on 2/10/17.
  */
 public class MemoryController {
     private static SystemMemory memory;
@@ -37,6 +36,9 @@ public class MemoryController {
             case MemoryCommands.READ:
                 System.out.println(read(address));
                 break;
+            case MemoryCommands.WRITE:
+                write(address, data);
+                break;
             default:
                 System.exit(0);
         }
@@ -49,6 +51,7 @@ public class MemoryController {
         if(memory == null)
             memory = new SystemMemory();
         memory.initialize();
+//        memory.printMemory();
     }
 
     /**
@@ -76,11 +79,7 @@ public class MemoryController {
         return data;
     }
 
-    private static void write(String input){
-
-    }
-
     private static void write(int address, int data){
-
+        memory.writeToMemory(address, data);
     }
 }
