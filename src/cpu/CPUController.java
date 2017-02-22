@@ -2,7 +2,6 @@ package cpu;
 
 import memory.MemoryCommands;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -12,10 +11,14 @@ import java.util.Scanner;
  * Created by Krishna Chaitanya Kandula on 2/20/17.
  */
 public class CPUController {
+
     private static final String CLASS_PATH = "out/production/CPU-Memory-Simulator memory.MemoryController";
     private static int IR;
     private static int AC;
-    private static int PC = -1;
+    private static int PC = 0;
+    private static PrintWriter writer;
+    private static Scanner scan;
+
     public static void main (String... args){
         try {
             Runtime rt = Runtime.getRuntime();
@@ -25,56 +28,53 @@ public class CPUController {
             InputStream is = proc.getInputStream();
             OutputStream os = proc.getOutputStream();
 
-            //Initialize memory
-            PrintWriter pw = new PrintWriter(os);
+            writer = new PrintWriter(os);
+            scan = new Scanner(is);
 
-            Scanner sc = new Scanner(is);
-            String line;
-            while(sc.hasNext() && !(line = sc.nextLine()).isEmpty()){
-                pw.printf(MemoryCommands.READ);
-                pw.flush();
-                IR = Integer.parseInt(line);
-                System.out.println("" + IR);
-                runInstruction(sc, pw);
-
+            while(true){
+                fetchInstructionToIR();
+                runInstruction();
             }
-
-            proc.waitFor();
-
-            int exitVal = proc.exitValue();
-
-            System.out.println("Process exited: " + exitVal);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void runInstruction(Scanner scan, PrintWriter pw){
+    private static int readFromMemory(int address){
+        writer.println(MemoryCommands.READ + address);
+        writer.flush();
+
+        return Integer.parseInt(scan.nextLine());;
+    }
+
+    private static void writeToMemory(int data, int address){
+        String command = String.format("%s|%d|%d", MemoryCommands.WRITE, data, address);
+        writer.println(command);
+        writer.flush();
+    }
+
+    private static void runInstruction(){
         switch (IR){
             case 1:
-                AC = getNextInstruction(scan, pw);
+                fetchInstructionToAC();
                 break;
             case 50:
                 System.exit(0);
                 break;
             default:
-                System.out.println("hi");
-//                System.exit(0);
+                System.out.println("Invalid Instruction");
+                System.exit(0);
                 break;
         }
     }
 
-    private static int getNextInstruction(Scanner scan, PrintWriter pw) {
-        pw.printf(MemoryCommands.READ + PC);
-        pw.flush();
-        String line;
-        int data = Integer.MIN_VALUE;
-        if (scan.hasNext()) {
-            line = scan.nextLine();
-            data = Integer.parseInt(line);
-        }
-        PC++;
-        return data;
+    private static void fetchInstructionToIR(){
+        IR = readFromMemory(PC++);
+//        System.out.println("IR = " + IR);
+    }
+
+    private static void fetchInstructionToAC(){
+        AC = readFromMemory(PC++);
+//        System.out.println("AC = " + AC);
     }
 }

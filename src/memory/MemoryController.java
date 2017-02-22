@@ -9,13 +9,15 @@ public class MemoryController {
     private static SystemMemory memory;
     public static void main(String... args){
         //Initial commands
-        initialize();
 //        read(MemoryCommands.READ + "0");
         try {
+            initialize();
             Scanner sc = new Scanner(System.in);
             String line;
-            while(sc.hasNext() && !(line = sc.nextLine()).isEmpty())
+            while(sc.hasNextLine()) {
+                line = sc.nextLine();
                 doCommand(line);
+            }
         }
         catch (Throwable t){
             t.printStackTrace();
@@ -27,7 +29,8 @@ public class MemoryController {
      * @param input
      */
     private static void doCommand(String input){
-        switch (input){
+        String command = getCommandFromInput(input);
+        switch (command){
             //Initialize SystemMemory
             case MemoryCommands.INIT:
                 initialize();
@@ -44,7 +47,14 @@ public class MemoryController {
         if(memory == null)
             memory = new SystemMemory();
         memory.initialize();
-        System.out.println(0);
+    }
+
+    private static String getCommandFromInput(String input){
+        int endIndex = 0;
+        while(endIndex < input.length() && Character.isAlphabetic(input.charAt(endIndex)))
+            endIndex++;
+
+        return input.substring(0, endIndex);
     }
 
     /**
