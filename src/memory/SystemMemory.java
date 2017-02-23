@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class SystemMemory {
     private static int[] memory;
     protected static final int MEMORY_CAPACITY = 2000;
-    public static final int USER_MEMORY_BOUNDER = 999;
+    public static final int USER_MEMORY_BOUNDARY = 999;
     private static String INPUT_FILE_PATH = new File("")
             .getAbsolutePath()
             .concat("/input.txt");
