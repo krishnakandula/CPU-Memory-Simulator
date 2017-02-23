@@ -89,13 +89,28 @@ public class CPUController {
                 //LoadIdxY addr
                 break;
             case 7:
+                //Store addr
                 fetchInstructionToIR();     //Contains the address
                 writeToMemory(IR, AC);
+                break;
+            case 8:
+                //Get
+                AC = generateRandomInteger();
                 break;
             case 9:
                 fetchInstructionToIR();
                 if(IR == 1)
                     System.out.println("" + AC);
+                else
+                    System.out.println((char)AC);
+                break;
+            case 10:
+                //AddX
+                AC += X;
+                break;
+            case 11:
+                //AddY
+                AC += Y;
                 break;
             case 50:
                 System.exit(0);
@@ -105,6 +120,13 @@ public class CPUController {
                 System.exit(0);
                 break;
         }
+    }
+
+    private static int generateRandomInteger(){
+        int min = 0;
+        int max = 100;
+        int randomNumber = (int) ((Math.random() * (max - min)) + min);
+        return randomNumber;
     }
 
     private static void fetchInstructionToIR(){
