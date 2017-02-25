@@ -1,7 +1,6 @@
 package cpu;
 
 import memory.MemoryCommands;
-import memory.MemoryController;
 import memory.SystemMemory;
 
 import java.io.InputStream;
@@ -20,10 +19,17 @@ public class CPUController {
     private static int PC = 0;
     private static int X = 0;
     private static int Y = 0;
-    private static int SP = 0;
+    private static int userSP = 999;
+    private static int systemSP = 1999;
+    private static int SP = userSP;
+    private static int timer = 0;
+    private static int timeout = 2;
+    private static boolean interruptMode = false;
     private static PrintWriter writer;
     private static Scanner scan;
-    private static boolean kernelMode = false;    //False = user mode, True = kernel mode
+    private static boolean kernelMode = false;    //false = user mode, true = kernel mode
+    private static boolean debug = true;
+
     public static void main (String... args){
         try {
             Runtime rt = Runtime.getRuntime();
@@ -37,7 +43,10 @@ public class CPUController {
             scan = new Scanner(is);
 
             while(true){
-//                System.out.println("PC = " + PC);
+                if(timer != 0 && timer % timeout == 0 && !interruptMode){
+                    pushSystemToStack();
+                    PC = 1000;
+                }
                 fetchInstructionToIR();
                 runInstruction();
             }
@@ -68,6 +77,9 @@ public class CPUController {
     }
 
     private static void runInstruction(){
+        if(!kernelMode)             //Only increment timer if in user mode
+            timer++;
+        printDebug();
         switch (IR){
             case 1:
                 fetchInstructionToAC();
@@ -103,8 +115,10 @@ public class CPUController {
                 fetchInstructionToIR();
                 if(IR == 1)
                     System.out.println("" + AC);
-                else
-                    System.out.println((char)AC);
+                else {
+                    System.out.println(":)");
+//                    System.out.println((char) AC);
+                }
                 break;
             case 10:
                 //AddX
@@ -148,28 +162,30 @@ public class CPUController {
                 break;
             case 20:
                 //Jump addr
-                jumpToAddress();
+                fetchInstructionToIR();
+                PC = IR;
                 break;
             case 21:
                 //JumpIfEqual addr
+                fetchInstructionToIR(); //get address
                 if(AC == 0)
-                    jumpToAddress();
+                    PC = IR;            //jump
                 break;
             case 22:
                 //JumpIfNotEqual addr
+                fetchInstructionToIR(); //get address
                 if(AC != 0)
-                    jumpToAddress();
+                    PC = IR;            //jump
                 break;
             case 23:
                 //Call addr
-                jumpToAddress();
-                PC++;
-                pushToStack(PC);
+                fetchInstructionToIR(); //get address
+                pushToStack(PC);        //save current address to stack
+                PC = IR;                //jump
                 break;
             case 24:
                 //Ret
-                int returnAddress = popFromStack();
-                PC = returnAddress;
+                PC = popFromStack();
                 break;
             case 25:
                 //IncX
@@ -189,20 +205,18 @@ public class CPUController {
                 break;
             case 29:
                 //Int
-                kernelMode = true;
-                pushToStack(++PC);
-                pushToStack(AC);
-                pushToStack(X);
-                pushToStack(Y);
-                pushToStack(SP);
+                if (!interruptMode) {
+                    interruptMode = true;
+                    pushSystemToStack();
+                    PC = 1500;
+                }
                 break;
             case 30:
                 //IRet
-                SP = popFromStack();
-                Y = popFromStack();
-                X = popFromStack();
-                AC = popFromStack();
-                PC = popFromStack();
+                interruptMode = false;
+                popSystemFromStack();
+                timer = 0;      //reset timer
+                break;
             case 50:
                 System.exit(0);
                 break;
@@ -213,19 +227,41 @@ public class CPUController {
         }
     }
 
-    private static void jumpToAddress(){
-        fetchInstructionToIR();
-        PC = IR;
+    private static void pushSystemToStack(){
+        SP = systemSP;
+        interruptMode = true;
+        kernelMode = true;
+        pushToStack(userSP);
+        pushToStack(PC);
+    }
+
+    private static void popSystemFromStack() {
+        PC = popFromStack();
+        SP = popFromStack();
+        userSP = SP;
+        kernelMode = false;
+        interruptMode = false;
     }
 
     private static void pushToStack(int data){
-        writeToMemory(SystemMemory.USER_MEMORY_BOUNDARY - SP, data);
-        SP++;
+        //Write data to stack, then decrement stack pointer
+        writeToMemory(SP, data);
+        SP--;
+        if(kernelMode)
+            systemSP--;
+        else
+            userSP--;
+
     }
 
     private static int popFromStack(){
-        int data = readFromMemory(SystemMemory.USER_MEMORY_BOUNDARY - SP);
-        SP--;
+        //Increment stack pointer to get to last index written to, then read
+        SP++;
+        int data = readFromMemory(SP);
+        if(kernelMode)
+            systemSP++;
+        else
+            userSP++;
         return data;
     }
 
@@ -237,12 +273,21 @@ public class CPUController {
     }
 
     private static void fetchInstructionToIR(){
-        IR = readFromMemory(PC++);
-//        System.out.println("IR = " + IR);
+        IR = readFromMemory(PC++);          //PC points to next instruction
     }
 
     private static void fetchInstructionToAC(){
         AC = readFromMemory(PC++);
-//        System.out.println("AC = " + AC);
+    }
+
+    private static void printDebug(){
+        if(debug) {
+            System.out.println("PC = " + PC);
+            System.out.println("IR = " + IR);
+            System.out.println("AC = " + AC);
+            System.out.println("SP = " + SP);
+            System.out.println("Timer = " + timer);
+            System.out.println("-----------");
+        }
     }
 }

@@ -75,8 +75,7 @@ public class MemoryController {
      * @param address
      */
     private static int read(int address){
-        int data = memory.readFromMemory(address);
-        return data;
+        return memory.readFromMemory(address);
     }
 
     private static void write(int address, int data){

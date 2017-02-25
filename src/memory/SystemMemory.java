@@ -22,7 +22,8 @@ public class SystemMemory {
     }
 
     protected void printMemory(){
-        System.out.println(Arrays.toString(memory));
+        System.out.println(":)" + memory[1000]);
+//        System.out.println(Arrays.toString(memory));
     }
 
     protected void writeToMemory(int address, int data){
@@ -46,7 +47,7 @@ public class SystemMemory {
             String line;
             int lastAddedIndex = 0;
             while((line = reader.readLine()) != null)
-                lastAddedIndex = initalizeMemoryIndex(line, lastAddedIndex);
+                lastAddedIndex = initializeMemoryIndex(line, lastAddedIndex);
 
         } catch (Exception e){
             System.out.println(e.getMessage());
@@ -69,7 +70,7 @@ public class SystemMemory {
      * @param address the address in memory to add the instruction to.
      * @return the last index that an input was added to.
      */
-    private int initalizeMemoryIndex(String input, int address) {
+    private int initializeMemoryIndex(String input, int address) {
         //Check if line is blank
         if (input.isEmpty())
             return address;
