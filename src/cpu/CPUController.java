@@ -28,7 +28,7 @@ public class CPUController {
     private static PrintWriter writer;
     private static Scanner scan;
     private static boolean kernelMode = false;    //false = user mode, true = kernel mode
-    private static boolean debug = true;
+    private static boolean debug = false;
 
     public static void main (String... args){
         try {
@@ -101,6 +101,8 @@ public class CPUController {
                 break;
             case 5:
                 //LoadIdxY addr
+                fetchInstructionToIR();     //Contains address
+                AC = readFromMemory(IR + Y);
                 break;
             case 7:
                 //Store addr
@@ -116,8 +118,7 @@ public class CPUController {
                 if(IR == 1)
                     System.out.println("" + AC);
                 else {
-                    System.out.println(":)");
-//                    System.out.println((char) AC);
+                    System.out.println((char) AC);
                 }
                 break;
             case 10:
