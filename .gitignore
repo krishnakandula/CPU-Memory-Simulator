@@ -2,9 +2,6 @@
 *.class
 out/
 
-#Input files
-*.txt
-
 #Intellij Files
 .idea/
 *.iml

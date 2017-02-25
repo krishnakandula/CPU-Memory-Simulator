@@ -23,7 +23,7 @@ public class SystemMemory {
     }
 
     protected void printMemory(){
-//        System.out.println(Arrays.toString(memory));
+        System.out.println(Arrays.toString(memory));
     }
 
     protected void writeToMemory(int address, int data){

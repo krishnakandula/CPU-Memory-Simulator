@@ -38,7 +38,7 @@ public class CPUController {
                 System.exit(1);
             }
             Runtime rt = Runtime.getRuntime();
-            //args[0] should contain inputfile, args[1] should contain timeout
+            //args[0] should contain input file, args[1] should contain timeout
             timeout = Integer.parseInt(args[1]);
             String executeCommand = String.format("java -classpath %s %s", CLASS_PATH, args[0]);
             Process proc = rt.exec(executeCommand);
