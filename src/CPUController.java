@@ -233,8 +233,8 @@ public class CPUController {
                 break;
             default:
                 System.out.println("Invalid Instruction");
-                if(!debug)
-                    printDebug();
+//                if(!debug)
+//                    printDebug();
 
                 System.exit(0);
                 break;
