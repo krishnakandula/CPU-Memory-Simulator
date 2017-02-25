@@ -23,7 +23,7 @@ public class CPUController {
     private static int systemSP = 1999;
     private static int SP = userSP;
     private static int timer = 0;
-    private static int timeout = 100;
+    private static int timeout = 4;
     private static boolean interruptMode = false;
     private static PrintWriter writer;
     private static Scanner scan;
@@ -187,14 +187,12 @@ public class CPUController {
             case 23:
                 //Call addr
                 fetchInstructionToIR(); //get address
-                pushToStack(++PC);        //save current address to stack
-                printDebug();
+                pushToStack(PC);        //save current address to stack
                 PC = IR;                //jump
                 break;
             case 24:
                 //Ret
                 PC = popFromStack();
-                printDebug();
                 break;
             case 25:
                 //IncX
