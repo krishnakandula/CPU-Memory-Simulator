@@ -23,7 +23,7 @@ public class CPUController {
     private static int systemSP = 1999;
     private static int SP = userSP;
     private static int timer = 0;
-    private static int timeout = 2;
+    private static int timeout = 100;
     private static boolean interruptMode = false;
     private static PrintWriter writer;
     private static Scanner scan;
@@ -72,14 +72,17 @@ public class CPUController {
     }
 
     private static void checkMode(int address){
-        if(address > SystemMemory.USER_MEMORY_BOUNDARY && !kernelMode)
+        if(address > SystemMemory.USER_MEMORY_BOUNDARY && !kernelMode) {
+            System.out.println("ERROR: Attempting to read/write from protected memory.");
             System.exit(1);
+        }
     }
 
     private static void runInstruction(){
         if(!kernelMode)             //Only increment timer if in user mode
             timer++;
-        printDebug();
+        if(debug)
+            printDebug();
         switch (IR){
             case 1:
                 fetchInstructionToAC();
@@ -104,6 +107,9 @@ public class CPUController {
                 fetchInstructionToIR();     //Contains address
                 AC = readFromMemory(IR + Y);
                 break;
+            case 6:
+                //LoadSpX
+                AC = readFromMemory(SP + X);
             case 7:
                 //Store addr
                 fetchInstructionToIR();     //Contains the address
@@ -116,9 +122,9 @@ public class CPUController {
             case 9:
                 fetchInstructionToIR();
                 if(IR == 1)
-                    System.out.println("" + AC);
+                    System.out.print("" + AC);
                 else {
-                    System.out.println((char) AC);
+                    System.out.print((char) AC);
                 }
                 break;
             case 10:
@@ -181,12 +187,14 @@ public class CPUController {
             case 23:
                 //Call addr
                 fetchInstructionToIR(); //get address
-                pushToStack(PC);        //save current address to stack
+                pushToStack(++PC);        //save current address to stack
+                printDebug();
                 PC = IR;                //jump
                 break;
             case 24:
                 //Ret
                 PC = popFromStack();
+                printDebug();
                 break;
             case 25:
                 //IncX
@@ -214,7 +222,6 @@ public class CPUController {
                 break;
             case 30:
                 //IRet
-                interruptMode = false;
                 popSystemFromStack();
                 timer = 0;      //reset timer
                 break;
@@ -223,6 +230,8 @@ public class CPUController {
                 break;
             default:
                 System.out.println("Invalid Instruction");
+                if(!debug)
+                    printDebug();
                 System.exit(0);
                 break;
         }
@@ -282,13 +291,11 @@ public class CPUController {
     }
 
     private static void printDebug(){
-        if(debug) {
-            System.out.println("PC = " + PC);
-            System.out.println("IR = " + IR);
-            System.out.println("AC = " + AC);
-            System.out.println("SP = " + SP);
-            System.out.println("Timer = " + timer);
-            System.out.println("-----------");
-        }
+        System.out.println("PC = " + PC);
+        System.out.println("IR = " + IR);
+        System.out.println("AC = " + AC);
+        System.out.println("SP = " + SP);
+        System.out.println("Timer = " + timer);
+        System.out.println("-----------");
     }
 }

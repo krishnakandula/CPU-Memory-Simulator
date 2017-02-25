@@ -22,7 +22,6 @@ public class SystemMemory {
     }
 
     protected void printMemory(){
-        System.out.println(":)" + memory[1000]);
 //        System.out.println(Arrays.toString(memory));
     }
 
@@ -73,6 +72,11 @@ public class SystemMemory {
     private int initializeMemoryIndex(String input, int address) {
         //Check if line is blank
         if (input.isEmpty())
+            return address;
+
+        //Check for space
+        char space = ' ';
+        if(input.charAt(0) == space)
             return address;
 
         //Check for comment
