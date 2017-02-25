@@ -22,12 +22,13 @@ public class CPUController {
     private static int userSP = 999;
     private static int systemSP = 1999;
     private static int SP = userSP;
-    private static int timer = 0;
-    private static int timeout = 4;
+    private static int timer = 1;
+    private static int timeout = 10;        //default
     private static boolean interruptMode = false;
     private static PrintWriter writer;
     private static Scanner scan;
     private static boolean kernelMode = false;    //false = user mode, true = kernel mode
+    private static boolean userCall = false;
     private static boolean debug = false;
 
     public static void main (String... args){
@@ -220,6 +221,7 @@ public class CPUController {
                 //Int
                 if (!interruptMode) {
                     interruptMode = true;
+                    userCall = true;
                     pushSystemToStack();
                     PC = 1500;
                 }
@@ -227,7 +229,9 @@ public class CPUController {
             case 30:
                 //IRet
                 popSystemFromStack();
-                timer = 0;      //reset timer
+                if(!userCall)
+                    timer = 0;      //reset timer
+                userCall = false;
                 break;
             case 50:
                 System.exit(0);
@@ -300,6 +304,8 @@ public class CPUController {
         System.out.println("IR = " + IR);
         System.out.println("AC = " + AC);
         System.out.println("SP = " + SP);
+        System.out.println("X = " + X);
+        System.out.println("Y = " + Y);
         System.out.println("Timer = " + timer);
         System.out.println("-----------");
     }
