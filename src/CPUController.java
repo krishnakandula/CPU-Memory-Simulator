@@ -1,8 +1,3 @@
-package cpu;
-
-import memory.MemoryCommands;
-import memory.SystemMemory;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -13,7 +8,7 @@ import java.util.Scanner;
  */
 public class CPUController {
 
-    private static final String CLASS_PATH = "out/production/CPU-Memory-Simulator memory.MemoryController";
+    private static final String CLASS_PATH = "out/production/CPU-Memory-Simulator MemoryController";
     private static int IR;
     private static int AC;
     private static int PC = 0;

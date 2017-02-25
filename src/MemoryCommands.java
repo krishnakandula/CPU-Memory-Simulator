@@ -1,5 +1,3 @@
-package memory;
-
 /**
  * Created by Krishna Chaitanya Kandula on 2/22/2017.
  */

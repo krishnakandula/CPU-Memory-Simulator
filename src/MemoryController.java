@@ -1,5 +1,3 @@
-package memory;
-
 import java.util.Scanner;
 
 /**
