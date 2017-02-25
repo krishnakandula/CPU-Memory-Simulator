@@ -15,10 +15,11 @@ public class SystemMemory {
     public static final int USER_MEMORY_BOUNDARY = 999;
     private static String INPUT_FILE_PATH = new File("")
             .getAbsolutePath()
-            .concat("/input.txt");
+            .concat("/");
 
-    protected SystemMemory(){
+    protected SystemMemory(String inputFile){
         memory = new int[MEMORY_CAPACITY];
+        INPUT_FILE_PATH = INPUT_FILE_PATH.concat(inputFile);
     }
 
     protected void printMemory(){

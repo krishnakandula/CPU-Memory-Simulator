@@ -32,9 +32,15 @@ public class CPUController {
 
     public static void main (String... args){
         try {
+            if(args.length != 2){
+                System.out.println("Incorrect commandline arguments. Please consult the README file for instructions.");
+                System.exit(1);
+            }
             Runtime rt = Runtime.getRuntime();
-
-            Process proc = rt.exec("java -classpath " + CLASS_PATH);
+            //args[0] should contain inputfile, args[1] should contain timeout
+            timeout = Integer.parseInt(args[1]);
+            String executeCommand = String.format("java -classpath %s %s", CLASS_PATH, args[0]);
+            Process proc = rt.exec(executeCommand);
 
             InputStream is = proc.getInputStream();
             OutputStream os = proc.getOutputStream();
@@ -230,6 +236,7 @@ public class CPUController {
                 System.out.println("Invalid Instruction");
                 if(!debug)
                     printDebug();
+
                 System.exit(0);
                 break;
         }

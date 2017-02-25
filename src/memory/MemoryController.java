@@ -8,10 +8,10 @@ import java.util.Scanner;
 public class MemoryController {
     private static SystemMemory memory;
     public static void main(String... args){
-        //Initial commands
-        initialize();
         try {
             Scanner sc = new Scanner(System.in);
+            //Initial commands
+            initialize(args[0]);
             String line;
             while(sc.hasNextLine()) {
                 line = sc.nextLine();
@@ -29,10 +29,6 @@ public class MemoryController {
      */
     private static void doCommand(String command, int address, int data){
         switch (command){
-            //Initialize SystemMemory
-            case MemoryCommands.INIT:
-                initialize();
-                break;
             case MemoryCommands.READ:
                 System.out.println(read(address));
                 break;
@@ -47,9 +43,9 @@ public class MemoryController {
     /**
      *
      */
-    private static void initialize(){
+    private static void initialize(String inputFile){
         if(memory == null)
-            memory = new SystemMemory();
+            memory = new SystemMemory(inputFile);
         memory.initialize();
 //        memory.printMemory();
     }
