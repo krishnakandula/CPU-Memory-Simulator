@@ -22,8 +22,10 @@ public class MemoryController {
     }
 
     /**
-     *
-     * @param command
+     * Performs the proper command given the input from the CPU
+     * @param command The command to be performed
+     * @param address The location in memory to be read/written
+     * @param data The data needed to be written
      */
     private static void doCommand(String command, int address, int data){
         switch (command){
@@ -39,7 +41,7 @@ public class MemoryController {
     }
 
     /**
-     *
+     * Initializes the system memory
      */
     private static void initialize(String inputFile){
         if(memory == null)
@@ -49,8 +51,8 @@ public class MemoryController {
     }
 
     /**
-     *
-     * @param input
+     * Formats the input to retrieve the command and data
+     * @param input the input from the CPU
      */
     private static void getCommandFromInput(String input){
         //Default values for data and address
@@ -65,13 +67,18 @@ public class MemoryController {
     }
 
     /**
-     *
-     * @param address
+     * Reads data from system memory
+     * @param address the location in memory where data needs to be read
      */
     private static int read(int address){
         return memory.readFromMemory(address);
     }
 
+    /**
+     * Writes data to system memory
+     * @param address the location where the data needs to be written
+     * @param data the data to be written
+     */
     private static void write(int address, int data){
         memory.writeToMemory(address, data);
     }

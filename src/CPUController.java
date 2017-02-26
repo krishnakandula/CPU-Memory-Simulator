@@ -57,6 +57,11 @@ public class CPUController {
         }
     }
 
+    /**
+     * Queries the Memory process and reads in the response
+     * @param address the location in memory of the desired data
+     * @return the data held in memory at the address
+     */
     private static int readFromMemory(int address){
         checkMode(address);
         String command = String.format("%s %d", MemoryCommands.READ, address);
@@ -66,6 +71,11 @@ public class CPUController {
         return Integer.parseInt(scan.nextLine());
     }
 
+    /**
+     * Asks the memory process to write data
+     * @param address the location in memory the data is to be written
+     * @param data the information that needs to be written
+     */
     private static void writeToMemory(int address, int data){
         checkMode(address);
         String command = String.format("%s %d %d", MemoryCommands.WRITE, address, data);
@@ -73,6 +83,10 @@ public class CPUController {
         writer.flush();
     }
 
+    /**
+     * Determines whether the program has access to a section of memory
+     * @param address the location the program wants access to
+     */
     private static void checkMode(int address){
         if(address > SystemMemory.USER_MEMORY_BOUNDARY && !kernelMode) {
             System.out.println("ERROR: Attempting to read/write from protected memory.");
@@ -80,6 +94,9 @@ public class CPUController {
         }
     }
 
+    /**
+     * Runs the instruction in the IR
+     */
     private static void runInstruction(){
         if(!kernelMode)             //Only increment timer if in user mode
             timer++;
@@ -241,6 +258,9 @@ public class CPUController {
         }
     }
 
+    /**
+     * Saves the proper registers into the stack
+     */
     private static void pushSystemToStack(){
         SP = systemSP;
         interruptMode = true;
@@ -249,6 +269,9 @@ public class CPUController {
         pushToStack(PC);
     }
 
+    /**
+     * Pops the proper registers from the stack
+     */
     private static void popSystemFromStack() {
         PC = popFromStack();
         SP = popFromStack();
@@ -257,6 +280,10 @@ public class CPUController {
         interruptMode = false;
     }
 
+    /**
+     * Writes some data into the stack in memory and updates the SP
+     * @param data the data to be pushed
+     */
     private static void pushToStack(int data){
         //Write data to stack, then decrement stack pointer
         writeToMemory(SP, data);
@@ -268,6 +295,10 @@ public class CPUController {
 
     }
 
+    /**
+     * Removes the top element from the proper stack
+     * @return the data retrieved from the stack
+     */
     private static int popFromStack(){
         //Increment stack pointer to get to last index written to, then read
         SP++;
@@ -279,6 +310,10 @@ public class CPUController {
         return data;
     }
 
+    /**
+     * Generates a random number from 0-100
+     * @return the random number
+     */
     private static int generateRandomInteger(){
         int min = 0;
         int max = 100;
@@ -286,14 +321,23 @@ public class CPUController {
         return randomNumber;
     }
 
+    /**
+     * Fetches the next instruction/data to the IR
+     */
     private static void fetchInstructionToIR(){
         IR = readFromMemory(PC++);          //PC points to next instruction
     }
 
+    /**
+     * Fetches the next instruction/data to the AC
+     */
     private static void fetchInstructionToAC(){
         AC = readFromMemory(PC++);
     }
 
+    /**
+     * Prints debug output to console
+     */
     private static void printDebug(){
         System.out.println("PC = " + PC);
         System.out.println("IR = " + IR);

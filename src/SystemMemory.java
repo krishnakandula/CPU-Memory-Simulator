@@ -20,14 +20,27 @@ public class SystemMemory {
         INPUT_FILE_PATH = INPUT_FILE_PATH.concat(inputFile);
     }
 
+    /**
+     * Prints the memory for debug purposes
+     */
     protected void printMemory(){
         System.out.println(Arrays.toString(memory));
     }
 
+    /**
+     * Writes data to memory
+     * @param address The location where data needs to be written
+     * @param data The data that needs to be written
+     */
     protected void writeToMemory(int address, int data){
         memory[address] = data;
     }
 
+    /**
+     * Reads data from memory
+     * @param address the location where data needs to be read from
+     * @return the data in the memory cell
+     */
     protected int readFromMemory(int address){
         return memory[address];
     }
